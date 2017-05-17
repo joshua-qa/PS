@@ -33,7 +33,7 @@ public class Main {
                 }
             } else if (N[i] % H[i] == 0) {
                 int temp = (N[i] / H[i]);
-                int temp2 = N[i];
+                int temp2 = H[i];
 
                 sb.append(temp2);
                 if (temp < 10) {
