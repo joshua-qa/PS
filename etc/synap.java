@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuffer sb = new StringBuffer();
         int N = Integer.parseInt(br.readLine());
         int[][] numArray = new int[N][N];
         int count = 0;
@@ -21,25 +22,25 @@ public class Main {
 
         for(int k = 0; k < N; k++) {
             count--;
-            System.out.print(numArray[--x][y]);
+            sb.append(numArray[--x][y]);
             if(count > 0) {
-                System.out.print(", ");
+                sb.append(", ");
             }
         }
 
         while(count > 0) {
             if (flag == -1 && y > depth) {
-                System.out.print(numArray[x][--y]);
+                sb.append(numArray[x][--y]);
             } else if (flag == -1 && x < N-depth-1) {
-                System.out.print(numArray[++x][y]);
+                sb.append(numArray[++x][y]);
             } else if (flag == 1 && y < N-depth-1) {
-                System.out.print(numArray[x][++y]);
+                sb.append(numArray[x][++y]);
             } else if (flag == 1 && x > depth) {
-                System.out.print(numArray[--x][y]);
+                sb.append(numArray[--x][y]);
             }
 
             if (count > 1) {
-                System.out.print(", ");
+                sb.append(", ");
             }
 
             count--;
@@ -51,5 +52,7 @@ public class Main {
                 flag *= -1;
             }
         }
+
+        System.out.print(sb.toString());
     }
 }
