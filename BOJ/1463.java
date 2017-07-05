@@ -1,29 +1,29 @@
-import java.util.Scanner;
+import java.io.*;
 
 public class Main {
-    static int[] numList = new int[1000001];
-    public static void JO_print(int num) {
-        numList[1] = 0;
+    private static int[] D = new int[1000001];
+    public static void main(String[] args) throws IOException, NumberFormatException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        for(int a=1;a<=num;a++) {
-            if(a+1 <= num && (numList[a+1] == 0 || numList[a+1] > numList[a] + 1)) {
-                numList[a + 1] = numList[a] + 1;
-            }
-            if(a*2 <= num && (numList[a*2] == 0 || numList[a*2] > numList[a] + 1)) {
-                numList[a * 2] = numList[a] + 1;
-            }
-            if(a*3 <= num && (numList[a*3] == 0 || numList[a*3] > numList[a] + 1)) {
-                numList[a * 3] = numList[a] + 1;
+        int n = Integer.valueOf(br.readLine());
+
+        D[1] = 0;
+        D[2] = 1;
+
+        for(int i = 3; i <= n; i++) {
+            if(i % 3 == 0 && i % 2 == 0) {
+                D[i] = Math.min(Math.min(D[i/3], D[i/2]), D[i-1]) + 1;
+            } else if(i % 2 == 0 && i % 3 != 0) {
+                D[i] = Math.min(D[i/2], D[i-1]) + 1;
+            } else if (i % 3 == 0 && i % 2 != 0) {
+                D[i] = Math.min(D[i/3], D[i-1]) + 1;
+            } else {
+                D[i] = D[i-1] + 1;
             }
         }
 
-        System.out.println(numList[num]);
-    }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int num = sc.nextInt();
-
-        JO_print(num);
+        bw.write(D[n] + "\n");
+        bw.flush();
     }
 }
