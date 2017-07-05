@@ -11,13 +11,14 @@ public class Main {
         D = new long[n+1];
 
         D[1] = 1;
-        D[2] = 2;
 
-        for(int i = 3; i <= n; i++) {
-            D[i] = D[i-2] + D[i-1];
-            D[i] %= MOD;
+        if(n > 1) {
+            D[2] = 2;
+            for(int i = 3; i <= n; i++) {
+                D[i] = D[i-2] + D[i-1];
+                D[i] %= MOD;
+            }
         }
-
         System.out.println(D[n]);
     }
 }
