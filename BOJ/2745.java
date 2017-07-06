@@ -1,0 +1,32 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        new Main().run();
+    }
+
+    public void run() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        char[] ca = st.nextToken().toCharArray();
+        int n = Integer.parseInt(st.nextToken());
+        int result = 0;
+        int pos = 1;
+
+        for(int i = ca.length-1; i >= 0; i--) {
+            if(ca[i] - 'A' >= 0) {
+                result += (ca[i] - 'A' + 10) * pos;
+            } else {
+                result += (ca[i] - '0') * pos;
+            }
+
+            pos *= n;
+        }
+
+        System.out.println(result);
+    }
+}
