@@ -3,10 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
-    long[][] D = new long[21][101];
-    long[][] A = new long[21][101];
-    long dmax, amax;
-    boolean flag;
+    int[][] D = new int[21][101];
+    int[][] A = new int[21][101];
     public static void main(String[] args) throws IOException {
         new Main().run();
     }
@@ -71,18 +69,6 @@ public class Main {
             }
         }
 
-        for(int i = 1; i <= devil.length; i++) {
-            if(D[target.length][i] > 0 || A[target.length][i] > 0) {
-                flag = true;
-            }
-            dmax = Math.max(D[target.length][i], dmax);
-            amax = Math.max(A[target.length][i], amax);
-        }
-
-        if(flag) {
-            System.out.println(dmax + amax);
-        } else {
-            System.out.println("0");
-        }
+        System.out.println(D[target.length][devil.length] + A[target.length][angel.length]);
     }
 }
