@@ -70,7 +70,7 @@ public class Main {
         for(int i = squareBorderX; i < squareBorderX + 3; i++) {
             for(int j = squareBorderY; j < squareBorderY + 3; j++) {
                 if(sudoku[i][j] == n) {
-                    return false;aa
+                    return false;
                 }
             }
         }
