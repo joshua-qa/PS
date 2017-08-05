@@ -26,7 +26,6 @@ public class Main {
             }
         }
 
-        // 1 : up, 2 : down, 3 : left, 4 : right
         for(int i = 1; i <= 4; i++) {
             rec(init, 5, i);
         }
@@ -36,11 +35,12 @@ public class Main {
 
     private void rec(int[][] board, int n, int command) {
         if(n == 0) {
+            maxCheck(board);
             return;
         }
         int[][] curr = new int[size][size];
-        for(int i = 0; i < curr.length; i++) {
-            System.arraycopy(board[i], 0, curr[i], 0, board[i].length);
+        for(int i = 0; i < size; i++) {
+            System.arraycopy(board[i], 0, curr[i], 0, size);
         }
 
         if(command == 1) {
@@ -58,16 +58,26 @@ public class Main {
         }
     }
 
+    private void maxCheck(int[][] board) {
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < size; j++) {
+                if(board[i][j] == 0) {
+                    continue;
+                }
+                if(max < board[i][j]) {
+                    max = board[i][j];
+                }
+            }
+        }
+    }
+
     private int[][] moveUp(int[][] currBoard) {
         int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < moveBoard.length; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, currBoard[i].length);
+        for(int i = 0; i < size; i++) {
+            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
         }
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
-                if(moveBoard[j][i] > max) {
-                    max = moveBoard[j][i];
-                }
                 if(moveBoard[j][i] == 0) {
                     continue;
                 } else {
@@ -81,9 +91,6 @@ public class Main {
             for(int j = 0; j < size-1; j++) {
                 if(moveBoard[j][i] == moveBoard[j+1][i]) {
                     moveBoard[j][i] *= 2;
-                    if(moveBoard[j][i] > max) {
-                        max = moveBoard[j][i];
-                    }
                     moveBoard[j+1][i] = 0;
                     int k = j+2;
                     while(k < size && moveBoard[k][i] != 0) {
@@ -100,14 +107,11 @@ public class Main {
 
     private int[][] moveDown(int[][] currBoard) {
         int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < moveBoard.length; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, currBoard[i].length);
+        for(int i = 0; i < size; i++) {
+            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
         }
         for(int i = 0; i < size; i++) {
             for(int j = size-1; j >= 0; j--) {
-                if(moveBoard[j][i] > max) {
-                    max = moveBoard[j][i];
-                }
                 if(moveBoard[j][i] == 0) {
                     continue;
                 } else {
@@ -121,9 +125,6 @@ public class Main {
             for(int j = size-1; j > 0; j--) {
                 if(moveBoard[j][i] == moveBoard[j-1][i]) {
                     moveBoard[j][i] *= 2;
-                    if(moveBoard[j][i] > max) {
-                        max = moveBoard[j][i];
-                    }
                     moveBoard[j-1][i] = 0;
                     int k = j-2;
                     while(k >= 0 && moveBoard[k][i] != 0) {
@@ -140,14 +141,11 @@ public class Main {
 
     private int[][] moveLeft(int[][] currBoard) {
         int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < moveBoard.length; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, currBoard[i].length);
+        for(int i = 0; i < size; i++) {
+            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
         }
         for(int i = 0; i < size; i++) {
             for(int j = 0; j < size; j++) {
-                if(moveBoard[i][j] > max) {
-                    max = moveBoard[j][i];
-                }
                 if(moveBoard[i][j] == 0) {
                     continue;
                 } else {
@@ -161,9 +159,6 @@ public class Main {
             for(int j = 0; j < size-1; j++) {
                 if(moveBoard[i][j] == moveBoard[i][j+1]) {
                     moveBoard[i][j] *= 2;
-                    if(moveBoard[i][j] > max) {
-                        max = moveBoard[i][j];
-                    }
                     moveBoard[i][j+1] = 0;
                     int k = j+2;
                     while(k < size && moveBoard[i][k] != 0) {
@@ -180,14 +175,11 @@ public class Main {
 
     private int[][] moveRight(int[][] currBoard) {
         int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < moveBoard.length; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, currBoard[i].length);
+        for(int i = 0; i < size; i++) {
+            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
         }
         for(int i = 0; i < size; i++) {
             for(int j = size-1; j >= 0; j--) {
-                if(moveBoard[i][j] > max) {
-                    max = moveBoard[j][i];
-                }
                 if(moveBoard[i][j] == 0) {
                     continue;
                 } else {
@@ -201,9 +193,6 @@ public class Main {
             for(int j = size-1; j > 0; j--) {
                 if(moveBoard[i][j] == moveBoard[i][j-1]) {
                     moveBoard[i][j] *= 2;
-                    if(moveBoard[i][j] > max) {
-                        max = moveBoard[i][j];
-                    }
                     moveBoard[i][j-1] = 0;
                     int k = j-2;
                     while(k >= 0 && moveBoard[i][k] != 0) {
