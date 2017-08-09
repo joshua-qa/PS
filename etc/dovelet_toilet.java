@@ -1,0 +1,1 @@
+import java.util.Scanner;class Main{public static void main(String[] args){Scanner s=new Scanner(System.in);int n=s.nextInt()+1;System.out.print(n++/2+" "+n/3);}}
