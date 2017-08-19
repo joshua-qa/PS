@@ -28,11 +28,19 @@ public class Main {
     }
 
     private void go(int x, int y, int size) {
-        if(size == 1) {
-            if(x == r && y == c) {
-                ans = count;
-            } else {
-                count++;
+        if(r < x || r >= x+size) {
+            count += (size * size);
+            return;
+        }
+        if(size == 2) {
+            for(int i = x; i < x+2; i++) {
+                for(int j = y; j < y+2; j++) {
+                    if(i == r && j == c) {
+                        ans = count;
+                    } else {
+                        count++;
+                    }
+                }
             }
             return;
         }
