@@ -12,17 +12,15 @@ public class Main {
     int[] Dx = {-1, 0, 0, 1};
     int[] Dy = {0, -1, 1, 0};
     Queue<Pair> visit = new LinkedList<>();
-    StringTokenizer st;
-    StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException {
         new Main().run();
     }
 
     public void run() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
+        String[] str = br.readLine().split(" ");
+        n = Integer.parseInt(str[0]);
+        m = Integer.parseInt(str[1]);
 
         map = new char[n][m];
         curr = new int[n][m];
@@ -44,6 +42,8 @@ public class Main {
 
     private boolean isStartPoint(int x, int y) {
         int count = 0;
+        int wcount = 0;
+        int hcount = 0;
 
         for(int i = 0; i < Dx.length; i++) {
             currX = x + Dx[i];
@@ -53,10 +53,15 @@ public class Main {
             }
             if(map[currX][currY] == 'L') {
                 count++;
+                if(i == 0 || i == 3) {
+                    wcount++;
+                } else {
+                    hcount++;
+                }
             }
         }
 
-        return count == 1 || count == 2;
+        return count == 1 || (count == 2 && wcount == 1 && hcount == 1);
     }
 
     private void bfs(int x, int y) {
