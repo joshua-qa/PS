@@ -1,23 +1,12 @@
-package Joshua.PS;
-
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scan = new Scanner(System.in);
-        String input = scan.nextLine();
-        int temp = 1;
-        String input2 = input.trim();
-
-        if(input2.equals("")) {
-            temp = 0;
-        }
-        for(int i = 0; i < input2.length(); i++) {
-            if(input2.substring(i, i+1).equals(" ")) {
-                temp++;
-            }
-        }
-
-        System.out.println(temp);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine().trim());
+        System.out.print(st.countTokens());
     }
 }
