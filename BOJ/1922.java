@@ -17,23 +17,22 @@ public class Main {
         union = new int[n+1];
 
         m = Integer.parseInt(br.readLine());
-        Edge[] graph = new Edge[m];
 
         for(int i = 1; i <= n; i++) {
             union[i] = i;
         }
 
+        PriorityQueue<Edge> pq = new PriorityQueue<>(m);
         for(int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
             int cost = Integer.parseInt(st.nextToken());
-            graph[i] = new Edge(u, v, cost);
+            pq.offer(new Edge(u, v, cost));
         }
 
-        Arrays.sort(graph, Comparator.comparingInt(p -> p.cost));
-
-        for(Edge e : graph) {
+        while(!pq.isEmpty()) {
+            Edge e = pq.poll();
             int x = find(e.u);
             int y = find(e.v);
             if(x == y) {
@@ -70,7 +69,7 @@ public class Main {
     }
 }
 
-class Edge {
+class Edge implements Comparable<Edge> {
     int u;
     int v;
     int cost;
@@ -78,5 +77,10 @@ class Edge {
         this.u = u;
         this.v = v;
         this.cost = cost;
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+        return this.cost - o.cost;
     }
 }
