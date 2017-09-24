@@ -1,32 +1,62 @@
-package Joshua.PS;
-
 import java.io.*;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    static int[] user;
-    static int m, n;
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuffer sb = new StringBuffer();
-        m = Integer.parseInt(br.readLine());
-        user = new int[m];
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int index = 0;
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
+    }
 
-        while (st.hasMoreTokens()) {
-            user[index++] = Integer.parseInt(st.nextToken());
+    static class Task {
+        int n, m;
+        boolean[] nums = new boolean[20000001];
+        StringBuilder sb = new StringBuilder();
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            for(int i = 0; i < n; i++) {
+                nums[in.nextInt()+10000000] = true;
+            }
+
+            m = in.nextInt();
+
+            for(int i = 0; i < m; i++) {
+                if(nums[in.nextInt()+10000000]) {
+                    sb.append("1 ");
+                } else {
+                    sb.append("0 ");
+                }
+            }
+            System.out.print(sb);
+        }
+    }
+
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
         }
 
-        Arrays.sort(user);
-
-        n = Integer.parseInt(br.readLine());
-        st = new StringTokenizer(br.readLine());
-        while (st.hasMoreTokens()) {
-            sb.append(Arrays.binarySearch(user, Integer.parseInt(st.nextToken())) >= 0 ? 1 : 0).append(" ");
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
         }
 
-        System.out.print(sb.toString());
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
     }
 }
