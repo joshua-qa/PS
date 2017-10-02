@@ -1,41 +1,77 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuffer sb = new StringBuffer();
-        int t = Integer.parseInt(br.readLine());
-
-        StringTokenizer st;
-        for(int i = 0; i < t; i++) {
-            st = new StringTokenizer(br.readLine());
-            int n = Integer.parseInt(st.nextToken());
-            int[] numArray = new int[n];
-            for (int j = 0; j < n; j++) {
-                numArray[j] = Integer.parseInt(st.nextToken());
-            }
-            sb.append(getTotal(numArray, n) + "\n");
-        }
-        System.out.print(sb.toString());
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    private static int getTotal(int[] numArray, int n) {
-        int result = 0;
-        for(int i = 0; i < numArray.length-1; i++) {
-            for(int j = i+1; j < numArray.length; j++) {
-                result += gcd(numArray[i], numArray[j]);
+    static class Task {
+        int n, m;
+        StringBuilder sb = new StringBuilder();
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            while(n-- > 0) {
+                long currGcd = 0;
+                m = in.nextInt();
+                long[] nums = new long[m];
+
+                for(int i = 0; i < m; i++) {
+                    nums[i] = in.nextLong();
+                }
+
+                for(int i = 0; i < m-1; i++) {
+                    for(int j = i+1; j < m; j++) {
+                        currGcd += gcd(nums[i], nums[j]);
+                    }
+                }
+
+                sb.append(currGcd).append("\n");
             }
+
+            out.print(sb);
         }
 
-        return result;
+        private long gcd(long p, long q) {
+            if(q == 0) {
+                return p;
+            }
+            return gcd(q, p % q);
+        }
     }
 
-    public static int gcd(int p, int q)
-    {
-        if (q == 0) return p;
-        return gcd(q, p%q);
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
+        }
     }
 }
