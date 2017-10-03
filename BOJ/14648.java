@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-    private int[] numList;
+    private long[] numList;
     private final int QUERY_ONE = 1;
     private final int QUERY_TWO = 2;
     public static void main(String[] args) throws IOException {
@@ -15,7 +15,7 @@ public class Main {
         String[] str = br.readLine().trim().split(" ");
         int n = Integer.parseInt(str[0]);
         int q = Integer.parseInt(str[1]);
-        numList = new int[n+1];
+        numList = new long[n+1];
 
         StringBuilder sb = new StringBuilder();
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -41,20 +41,20 @@ public class Main {
         System.out.print(sb);
     }
 
-    private int queryOne(int a, int b) {
-        int result = 0;
+    private long queryOne(int a, int b) {
+        long result = 0;
         for(int i = a; i <= b; i++) {
             result += numList[i];
         }
 
-        int temp = numList[a];
+        long temp = numList[a];
         numList[a] = numList[b];
         numList[b] = temp;
         return result;
     }
 
-    private int queryTwo(int a, int b, int c, int d) {
-        int result = 0;
+    private long queryTwo(int a, int b, int c, int d) {
+        long result = 0;
         for(int i = a; i <= b; i++) {
             result += numList[i];
         }
