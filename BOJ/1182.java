@@ -1,4 +1,5 @@
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 
 public class Main {
@@ -13,36 +14,39 @@ public class Main {
     }
 
     static class Task {
-        int n, m;
-        StringBuilder sb = new StringBuilder();
+        int n, s, ans;
+        int[] nums;
         public void run(InputReader in, PrintWriter out) {
             n = in.nextInt();
-            while(n-- > 0) {
-                long currGcd = 0;
-                m = in.nextInt();
-                long[] nums = new long[m];
+            s = in.nextInt();
+            nums = new int[n];
 
-                for(int i = 0; i < m; i++) {
-                    nums[i] = in.nextLong();
-                }
-
-                for(int i = 0; i < m-1; i++) {
-                    for(int j = i+1; j < m; j++) {
-                        currGcd += gcd(nums[i], nums[j]);
-                    }
-                }
-
-                sb.append(currGcd).append("\n");
+            for (int i = 0; i < n; i++) {
+                nums[i] = in.nextInt();
             }
 
-            out.print(sb);
+            for (int i = 1; i <= n; i++) {
+                for(int j = 0; j <= n-i; j++) {
+                    solve(i, j, 0);
+                }
+            }
+
+            out.print(ans);
         }
 
-        private long gcd(long p, long q) {
-            if(q == 0) {
-                return p;
+        private void solve(int count, int pos, int curr) {
+            if(count == 1) {
+                curr += nums[pos];
+                if(curr == s) {
+                    ans++;
+                }
+                return;
             }
-            return gcd(q, p % q);
+
+            curr += nums[pos];
+            for(int i = pos+1; i <= n-count+1; i++) {
+                solve(count-1, i, curr);
+            }
         }
     }
 

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.math.BigInteger;
 import java.util.*;
 
 public class Main {
@@ -13,36 +14,38 @@ public class Main {
     }
 
     static class Task {
-        int n, m;
-        StringBuilder sb = new StringBuilder();
+        int n, m, ans;
+        boolean zeroFlag;
+        ArrayList<Integer> numList = new ArrayList<>();
         public void run(InputReader in, PrintWriter out) {
             n = in.nextInt();
-            while(n-- > 0) {
-                long currGcd = 0;
+
+            for (int i = 0; i < n; i++) {
                 m = in.nextInt();
-                long[] nums = new long[m];
-
-                for(int i = 0; i < m; i++) {
-                    nums[i] = in.nextLong();
+                if(m != 0) {
+                    numList.add(m);
+                } else {
+                    zeroFlag = true;
                 }
-
-                for(int i = 0; i < m-1; i++) {
-                    for(int j = i+1; j < m; j++) {
-                        currGcd += gcd(nums[i], nums[j]);
-                    }
-                }
-
-                sb.append(currGcd).append("\n");
             }
 
-            out.print(sb);
-        }
+            if(numList.size() > 1) {
+                numList.sort(Comparator.reverseOrder());
 
-        private long gcd(long p, long q) {
-            if(q == 0) {
-                return p;
+                int size = numList.size();
+                int two = Math.max(numList.get(0) * numList.get(1), numList.get(size - 2) * numList.get(size - 1));
+                ans = two;
+                if(numList.size() > 2) {
+                    int three1 = numList.get(0) * numList.get(1) * numList.get(2);
+                    int three2 = numList.get(0) * numList.get(size - 1) * numList.get(size - 2);
+                    ans = Math.max(ans, Math.max(three1, three2));
+                }
             }
-            return gcd(q, p % q);
+
+            if(zeroFlag && ans < 0) {
+                ans = 0;
+            }
+            out.print(ans);
         }
     }
 

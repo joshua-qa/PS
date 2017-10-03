@@ -13,36 +13,13 @@ public class Main {
     }
 
     static class Task {
-        int n, m;
-        StringBuilder sb = new StringBuilder();
+        int ans;
         public void run(InputReader in, PrintWriter out) {
-            n = in.nextInt();
-            while(n-- > 0) {
-                long currGcd = 0;
-                m = in.nextInt();
-                long[] nums = new long[m];
-
-                for(int i = 0; i < m; i++) {
-                    nums[i] = in.nextLong();
-                }
-
-                for(int i = 0; i < m-1; i++) {
-                    for(int j = i+1; j < m; j++) {
-                        currGcd += gcd(nums[i], nums[j]);
-                    }
-                }
-
-                sb.append(currGcd).append("\n");
+            while(in.nextLine() != null) {
+                ans++;
             }
 
-            out.print(sb);
-        }
-
-        private long gcd(long p, long q) {
-            if(q == 0) {
-                return p;
-            }
-            return gcd(q, p % q);
+            out.print(ans);
         }
     }
 
@@ -64,6 +41,14 @@ public class Main {
                 }
             }
             return tokenizer.nextToken();
+        }
+
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public int nextInt() {
