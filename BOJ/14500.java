@@ -13,24 +13,24 @@ public class Main {
     }
 
     static class Task {
-        int n, m, ans, curr;
+        int n, m, ans, curr, block;
         int[][] map;
         int[][][] threeBlock1 = { {{1, 0}, {1, 0}, {1, 1}},
-                                    {{1, 1}, {0, 1}, {0, 1}},
-                                    {{0, 1}, {0, 1}, {1, 1}},
-                                    {{1, 1}, {1, 0}, {1, 0}},
-                                    {{0, 1}, {1, 1}, {1, 0}},
-                                    {{1, 0}, {1, 1}, {0, 1}},
-                                    {{0, 1}, {1, 1}, {0, 1}},
-                                    {{1, 0}, {1, 1}, {1, 0}} };
+                {{1, 1}, {0, 1}, {0, 1}},
+                {{0, 1}, {0, 1}, {1, 1}},
+                {{1, 1}, {1, 0}, {1, 0}},
+                {{0, 1}, {1, 1}, {1, 0}},
+                {{1, 0}, {1, 1}, {0, 1}},
+                {{0, 1}, {1, 1}, {0, 1}},
+                {{1, 0}, {1, 1}, {1, 0}} };
         int[][][] threeBlock2 = { {{1, 1, 1}, {1, 0, 0}},
-                                    {{0, 0, 1}, {1, 1, 1}},
-                                    {{1, 1, 1}, {0, 0, 1}},
-                                    {{1, 0, 0}, {1, 1, 1}},
-                                    {{1, 1, 0}, {0, 1, 1}},
-                                    {{0, 1, 1}, {1, 1, 0}},
-                                    {{1, 1, 1}, {0, 1, 0}},
-                                    {{0, 1, 0}, {1, 1, 1}} };
+                {{0, 0, 1}, {1, 1, 1}},
+                {{1, 1, 1}, {0, 0, 1}},
+                {{1, 0, 0}, {1, 1, 1}},
+                {{1, 1, 0}, {0, 1, 1}},
+                {{0, 1, 1}, {1, 1, 0}},
+                {{1, 1, 1}, {0, 1, 0}},
+                {{0, 1, 0}, {1, 1, 1}} };
         public void run(InputReader in, PrintWriter out) {
             n = in.nextInt();
             m = in.nextInt();
@@ -57,7 +57,6 @@ public class Main {
 
         private int search(int x, int y) {
             int currMax = 0;
-            int block = 0;
 
             // case 1
             if(y <= m-4) {
@@ -86,7 +85,9 @@ public class Main {
                     block = 0;
                     for(int j = x; j < x+3; j++) {
                         for(int k = y; k < y+2; k++) {
-                            block += map[j][k] * threeBlock1[i][j-x][k-y];
+                            if(threeBlock1[i][j-x][k-y] == 1) {
+                                block += map[j][k];
+                            }
                         }
                     }
                     if(currMax < block) {
@@ -100,7 +101,9 @@ public class Main {
                     block = 0;
                     for(int j = x; j < x+2; j++) {
                         for(int k = y; k < y+3; k++) {
-                            block += map[j][k] * threeBlock2[i][j-x][k-y];
+                            if(threeBlock2[i][j-x][k-y] == 1) {
+                                block += map[j][k];
+                            }
                         }
                     }
                     if(currMax < block) {
