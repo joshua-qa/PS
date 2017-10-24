@@ -15,11 +15,10 @@ public class Main {
     static class Task {
         int n;
         double euclid, taxi;
-        final double PI = 3.14159265358979323;
         public void run(InputReader in, PrintWriter out) {
             n = in.nextInt();
-            
-            euclid = (double)n * (double)n * PI;
+
+            euclid = (double)n * (double)n * Math.PI;
             taxi = (double)n * (double)n * 2;
 
             System.out.printf("%.6f\n", euclid);
