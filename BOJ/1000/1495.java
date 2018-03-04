@@ -20,9 +20,9 @@ public class Main {
             n = in.nextInt();
             s = in.nextInt();
             m = in.nextInt();
-            v = new int[n];
+            v = new int[n+1];
 
-            for(int i = 0; i < n; i++) {
+            for(int i = 1; i <= n; i++) {
                 v[i] = in.nextInt();
             }
 
@@ -31,12 +31,12 @@ public class Main {
             for(int i = 0; i < n; i++) {
                 for(int j = 0; j <= m; j++) {
                     if(dp[i][j]) {
-                        if (j - v[i] >= 0 && !dp[i+1][j - v[i]]) {
-                            dp[i+1][j - v[i]] = true;
+                        if (j - v[i+1] >= 0 && !dp[i+1][j - v[i+1]]) {
+                            dp[i+1][j - v[i+1]] = true;
                         }
 
-                        if (j + v[i] <= m && !dp[i+1][j + v[i]]) {
-                            dp[i+1][j + v[i]] = true;
+                        if (j + v[i+1] <= m && !dp[i+1][j + v[i+1]]) {
+                            dp[i+1][j + v[i+1]] = true;
                         }
                     }
                 }
