@@ -1,5 +1,4 @@
 import java.io.*;
-import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -14,49 +13,24 @@ public class Main {
     }
 
     static class Task {
-        final char P = 'P';
-        final char B = 'B';
-        final char D = 'D';
-        final char L = 'L';
-        int n;
-        Stack<Character> left = new Stack<>();
-        Stack<Character> right = new Stack<>();
+        int n, m;
+        int[][] d = new int[41][2];
+        StringBuilder sb = new StringBuilder();
         public void run(InputReader in, PrintWriter out) {
-            char[] input = in.next().toCharArray();
-            for(char c : input) {
-                left.push(c);
-            }
             n = in.nextInt();
 
+            d[0][0] = 1;
+            d[0][1] = 0;
+            d[1][0] = 0;
+            d[1][1] = 1;
+            for(int i = 2; i <= 40; i++) {
+                d[i][0] = d[i-1][0] + d[i-2][0];
+                d[i][1] = d[i-1][1] + d[i-2][1];
+            }
+
             for(int i = 0; i < n; i++) {
-                char op = in.next().charAt(0);
-
-                if(op == P) {
-                    left.push(in.next().charAt(0));
-                } else if(op == B) {
-                    if(!left.empty()) {
-                        left.pop();
-                    }
-                } else if(op == D) {
-                    if(!right.empty()) {
-                        left.push(right.pop());
-                    }
-                } else {
-                    if(!left.empty()) {
-                        right.push(left.pop());
-                    }
-                }
-            }
-
-            StringBuilder sb = new StringBuilder(left.size() + right.size());
-            while(!left.empty()) {
-                sb.append(left.pop());
-            }
-            
-            sb.reverse();
-
-            while(!right.empty()) {
-                sb.append(right.pop());
+                m = in.nextInt();
+                sb.append(d[m][0]).append(" ").append(d[m][1]).append("\n");
             }
 
             out.print(sb);
