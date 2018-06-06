@@ -13,7 +13,7 @@ public class Main {
     }
 
     static class Task {
-        int n, ans;
+        int n, ans, sX, sY;
         int[] dX = {-1, 0, 0, 1};
         int[] dY = {0, -1, 1, 0};
         int[][] map, D;
@@ -23,6 +23,7 @@ public class Main {
             D = new int[n][n];
 
             for(int i = 0; i < n; i++) {
+                Arrays.fill(D[i], -1);
                 for(int j = 0; j < n; j++) {
                     map[i][j] = in.nextInt();
                 }
@@ -30,10 +31,9 @@ public class Main {
 
             for(int i = 0; i < n; i++) {
                 for(int j = 0; j < n; j++) {
-                    if(D[i][j] < 2) {
-                        D[i][j] = 1;
-                        dfs(i, j, 1);
-                    }
+                    sX = i;
+                    sY = j;
+                    dfs(i, j);
                 }
             }
 
@@ -44,19 +44,26 @@ public class Main {
                     }
                 }
             }
-            out.print(ans);
+            out.print(ans + 1);
         }
 
-        private void dfs(int x, int y, int move) {
+        private int dfs(int x, int y) {
+            if(D[x][y] != -1) {
+                return D[x][y];
+            }
+            int temp = 0;
             for(int i = 0; i < dX.length; i++) {
                 if(x + dX[i] < 0 || x + dX[i] >= n || y + dY[i] < 0 || y + dY[i] >= n) {
                     continue;
                 }
-                if(map[x + dX[i]][y + dY[i]] > map[x][y] && D[x][y] + 1 > D[x + dX[i]][y + dY[i]]) {
-                    D[x + dX[i]][y + dY[i]] = D[x][y] + 1;
-                    dfs(x + dX[i], y + dY[i], move + 1);
+                if(map[x][y] >= map[x + dX[i]][y + dY[i]]) {
+                    continue;
                 }
+
+                temp = Math.max(temp, dfs(x + dX[i], y + dY[i]));
+                D[x][y] = Math.max(D[x][y], temp + 1);
             }
+            return D[x][y];
         }
     }
 
