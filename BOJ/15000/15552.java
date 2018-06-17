@@ -16,28 +16,8 @@ public class Main {
         int n;
         public void run(InputReader in, PrintWriter out) {
             n = in.nextInt();
-            List<String> enterList = new ArrayList<>(n);
-            Map<String, Boolean> memberList = new HashMap<>(n);
-
             for(int i = 0; i < n; i++) {
-                String name = in.next();
-                if(in.next().charAt(0) == 'e') {
-                    memberList.put(name, true);
-                    continue;
-                }
-                memberList.put(name, false);
-            }
-
-            for(String name : memberList.keySet()) {
-                if(memberList.get(name)) {
-                    enterList.add(name);
-                }
-            }
-
-            enterList.sort(Comparator.reverseOrder());
-
-            for(String name : enterList) {
-                out.println(name);
+                out.println(in.nextInt() + in.nextInt());
             }
         }
     }
