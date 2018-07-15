@@ -13,105 +13,84 @@ public class Main {
     }
 
     static class Task {
-        class Snake {
-            int x;
-            int y;
-            public Snake(int x, int y) {
-                this.x = x;
-                this.y = y;
-            }
-        }
-        int n, m, k, currDir, seconds, len, headX, headY, tailX, tailY;
-        int[] Dx = {0, -1, 0, 1};
-        int[] Dy = {1, 0, -1, 0};
+        /**
+         * 0 : empty, 1 : body, 2 : apple
+         */
+        int[] dx = {0, -1, 1, 0};
+        int[] dy = {-1, 0, 0, 1};
+        char[] dirInfo = new char[10001];
         int[][] map;
-        boolean endFlag;
-        Queue<Snake> snakes = new LinkedList<>();
+        Deque<Pair> body = new ArrayDeque<>();
+        int dir = 2, n, m, time, currX, currY, result;
         public void run(InputReader in, PrintWriter out) {
             n = in.nextInt();
+            map = new int[n][n];
             m = in.nextInt();
-            map = new int[n+2][n+2];
+            for(int i = 0; i < m; i++) {
+                currX = in.nextInt();
+                currY = in.nextInt();
+                map[--currY][--currX] = 2;
+            }
+            currX = currY = 0;
 
-            for (int i = 0; i < m; i++) {
-                map[in.nextInt()][in.nextInt()] = 2;
+            body.addFirst(new Pair(0, 0));
+            map[0][0] = 1;
+            m = in.nextInt();
+            for(int i = 0; i < m; i++) {
+                time = in.nextInt();
+                char c = in.next().charAt(0);
+                dirInfo[time] = c;
             }
 
-            map[1][1] = 1;
-            snakes.offer(new Snake(1, 1));
-            headX = headY = tailX = tailY = 1;
-            k = in.nextInt();
-            for (int i = 0; i < k; i++) {
-                int x = in.nextInt();
-                char c = in.next().charAt(0);
-
-                while(seconds < x) {
-                    headX += Dx[currDir];
-                    headY += Dy[currDir];
-                    seconds++;
-                    snakes.offer(new Snake(headX, headY));
-
-                    if(map[headX][headY] == 2) {
-                        len++;
-                        map[headX][headY] = 1;
-                    } else if(map[headX][headY] == 1 || isCrash(headX, headY)) {
-                        endFlag = true;
-                        break;
-                    } else {
-                        map[headX][headY] = 1;
-                        map[tailX][tailY] = 0;
-                        snakes.remove();
-                        tailX = snakes.peek().x;
-                        tailY = snakes.peek().y;
-                    }
-                }
-
-                if(endFlag) {
+            while(true) {
+                result++;
+                currX += dx[dir];
+                currY += dy[dir];
+                if(!isMovable(currX, currY)) {
                     break;
                 }
-
-                currDir = changeDir(currDir, c);
-            }
-
-            if(endFlag) {
-                out.print(seconds);
-            } else {
-                while(true) {
-                    headX += Dx[currDir];
-                    headY += Dy[currDir];
-                    seconds++;
-                    snakes.offer(new Snake(headX, headY));
-
-                    if(map[headX][headY] == 2) {
-                        len++;
-                        map[headX][headY] = 1;
-                    } else if(map[headX][headY] == 1 || isCrash(headX, headY)) {
-                        break;
-                    } else {
-                        map[headX][headY] = 1;
-                        map[tailX][tailY] = 0;
-                        snakes.remove();
-                        tailX = snakes.peek().x;
-                        tailY = snakes.peek().y;
-                    }
+                if(map[currX][currY] != 2) {
+                    Pair tail = body.removeLast();
+                    map[tail.x][tail.y] = 0;
                 }
-                out.print(seconds);
+                body.addFirst(new Pair(currX, currY));
+                map[currX][currY] = 1;
+                if(dirInfo[result] != 0) {
+                    changeDir(dirInfo[result]);
+                }
             }
+
+            out.print(result);
         }
 
-        private boolean isCrash(int x, int y) {
-            return x == 0 || y == 0 || x == n+1 || y == n+1;
+        private boolean isMovable(int x, int y) {
+            return x > -1 && x < n && y > -1 && y < n && map[x][y] != 1;
         }
 
-        private int changeDir(int d, char c) {
-            if((d == 0 && c == 'L') || (d == 2 && c == 'D')) {
-                return 1;
-            } else if((d == 0 && c == 'D') || (d == 2 && c == 'L')) {
-                return 3;
-            } else if((d == 1 && c == 'L') || (d == 3 && c == 'D')) {
-                return 2;
-            } else {
-                return 0;
+        private void changeDir(char nextDir) {
+            switch (dir) {
+                case 0 :
+                    dir = (nextDir == 'L') ? 1 : 2;
+                    return;
+                case 1 :
+                    dir = (nextDir == 'L') ? 3 : 0;
+                    return;
+                case 2 :
+                    dir = (nextDir == 'L') ? 0 : 3;
+                    return;
+                case 3 :
+                    dir = (nextDir == 'L') ? 2 : 1;
+                    return;
             }
+        }
+    }
+
+    static class Pair {
+        int x;
+        int y;
+        public Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 
@@ -133,6 +112,14 @@ public class Main {
                 }
             }
             return tokenizer.nextToken();
+        }
+
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public int nextInt() {

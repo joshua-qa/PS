@@ -1,209 +1,134 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    int[][] init;
-    int max, size;
-    StringTokenizer st;
-    public static void main(String[] args) throws IOException {
-        new Main().run();
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    public void run() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static class Task {
+        int n, front, frontIndex, result;
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            int[][] map = new int[n][n];
 
-        int n = Integer.parseInt(br.readLine());
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    map[i][j] = in.nextInt();
+                }
+            }
 
-        init = new int[n][n];
-        size = n;
+            dfs(0, map);
 
-        for(int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            for(int j = 0; j < n; j++) {
-                init[i][j] = Integer.parseInt(st.nextToken());
+            out.print(result);
+        }
+
+        private void dfs(int count, int[][] map) {
+            if(count == 5) {
+                getMaxValue(map);
+                return;
+            }
+
+            for(int i = 0; i < 4; i++) {
+                map = rotate(map);
+                int[][] newMap = left(map);
+                dfs(count + 1, newMap);
             }
         }
 
-        for(int i = 1; i <= 4; i++) {
-            rec(init, 5, i);
+        private void getMaxValue(int[][] map) {
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    if(map[i][j] != 0 && result < map[i][j]) {
+                        result = map[i][j];
+                    }
+                }
+            }
         }
 
-        System.out.print(max);
+        private int[][] left(int[][] map) {
+            int[][] newMap = new int[n][n];
+            for(int i = 0; i < n; i++) {
+                System.arraycopy(map[i], 0, newMap[i], 0, n);
+                front = newMap[i][0];
+                frontIndex = 0;
+                for(int j = 1; j < n; j++) {
+                    if(newMap[i][j] == 0) {
+                        continue;
+                    } else if(newMap[i][frontIndex] == 0) {
+                        newMap[i][frontIndex] = newMap[i][j];
+                        front = newMap[i][j];
+                        newMap[i][j] = 0;
+                        continue;
+                    }
+                    if(front == newMap[i][j]) {
+                        newMap[i][frontIndex] *= 2;
+                        front = 0;
+                        newMap[i][j] = 0;
+                    } else {
+                        if(++frontIndex != j) {
+                            newMap[i][frontIndex] = newMap[i][j];
+                            newMap[i][j] = 0;
+                        }
+                        front = newMap[i][frontIndex];
+                    }
+                }
+            }
+
+            return newMap;
+        }
+
+        private int[][] rotate(int[][] map) {
+            int[][] newMap = new int[n][n];
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++) {
+                    newMap[n-j-1][i] = map[i][j];
+                }
+            }
+            return newMap;
+        }
     }
 
-    private void rec(int[][] board, int n, int command) {
-        if(n == 0) {
-            maxCheck(board);
-            return;
-        }
-        int[][] curr = new int[size][size];
-        for(int i = 0; i < size; i++) {
-            System.arraycopy(board[i], 0, curr[i], 0, size);
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
         }
 
-        if(command == 1) {
-            curr = moveUp(board);
-        } else if(command == 2) {
-            curr = moveDown(board);
-        } else if(command == 3) {
-            curr = moveLeft(board);
-        } else {
-            curr = moveRight(board);
-        }
-
-        for(int i = 1; i <= 4; i++) {
-            rec(curr, n-1, i);
-        }
-    }
-
-    private void maxCheck(int[][] board) {
-        for(int i = 0; i < size; i++) {
-            for(int j = 0; j < size; j++) {
-                if(board[i][j] == 0) {
-                    continue;
-                }
-                if(max < board[i][j]) {
-                    max = board[i][j];
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
+            return tokenizer.nextToken();
         }
-    }
 
-    private int[][] moveUp(int[][] currBoard) {
-        int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < size; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
-        }
-        for(int i = 0; i < size; i++) {
-            for(int j = 0; j < size; j++) {
-                if(moveBoard[j][i] == 0) {
-                    continue;
-                } else {
-                    while(j-1 >= 0 && moveBoard[j-1][i] == 0) {
-                        moveBoard[j-1][i] = moveBoard[j][i];
-                        moveBoard[j][i] = 0;
-                        j--;
-                    }
-                }
-            }
-            for(int j = 0; j < size-1; j++) {
-                if(moveBoard[j][i] == moveBoard[j+1][i]) {
-                    moveBoard[j][i] *= 2;
-                    moveBoard[j+1][i] = 0;
-                    int k = j+2;
-                    while(k < size && moveBoard[k][i] != 0) {
-                        moveBoard[k-1][i] = moveBoard[k][i];
-                        moveBoard[k][i] = 0;
-                        k++;
-                    }
-                }
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        return moveBoard;
-    }
-
-    private int[][] moveDown(int[][] currBoard) {
-        int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < size; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
-        }
-        for(int i = 0; i < size; i++) {
-            for(int j = size-1; j >= 0; j--) {
-                if(moveBoard[j][i] == 0) {
-                    continue;
-                } else {
-                    while(j+1 < size && moveBoard[j+1][i] == 0) {
-                        moveBoard[j+1][i] = moveBoard[j][i];
-                        moveBoard[j][i] = 0;
-                        j++;
-                    }
-                }
-            }
-            for(int j = size-1; j > 0; j--) {
-                if(moveBoard[j][i] == moveBoard[j-1][i]) {
-                    moveBoard[j][i] *= 2;
-                    moveBoard[j-1][i] = 0;
-                    int k = j-2;
-                    while(k >= 0 && moveBoard[k][i] != 0) {
-                        moveBoard[k+1][i] = moveBoard[k][i];
-                        moveBoard[k][i] = 0;
-                        k--;
-                    }
-                }
-            }
+        public int nextInt() {
+            return Integer.parseInt(next());
         }
 
-        return moveBoard;
-    }
-
-    private int[][] moveLeft(int[][] currBoard) {
-        int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < size; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
+        public long nextLong() {
+            return Long.parseLong(next());
         }
-        for(int i = 0; i < size; i++) {
-            for(int j = 0; j < size; j++) {
-                if(moveBoard[i][j] == 0) {
-                    continue;
-                } else {
-                    while(j-1 >= 0 && moveBoard[i][j-1] == 0) {
-                        moveBoard[i][j-1] = moveBoard[i][j];
-                        moveBoard[i][j] = 0;
-                        j--;
-                    }
-                }
-            }
-            for(int j = 0; j < size-1; j++) {
-                if(moveBoard[i][j] == moveBoard[i][j+1]) {
-                    moveBoard[i][j] *= 2;
-                    moveBoard[i][j+1] = 0;
-                    int k = j+2;
-                    while(k < size && moveBoard[i][k] != 0) {
-                        moveBoard[i][k-1] = moveBoard[i][k];
-                        moveBoard[i][k] = 0;
-                        k++;
-                    }
-                }
-            }
-        }
-
-        return moveBoard;
-    }
-
-    private int[][] moveRight(int[][] currBoard) {
-        int[][] moveBoard = new int[size][size];
-        for(int i = 0; i < size; i++) {
-            System.arraycopy(currBoard[i], 0, moveBoard[i], 0, size);
-        }
-        for(int i = 0; i < size; i++) {
-            for(int j = size-1; j >= 0; j--) {
-                if(moveBoard[i][j] == 0) {
-                    continue;
-                } else {
-                    while(j+1 < size && moveBoard[i][j+1] == 0) {
-                        moveBoard[i][j+1] = moveBoard[i][j];
-                        moveBoard[i][j] = 0;
-                        j++;
-                    }
-                }
-            }
-            for(int j = size-1; j > 0; j--) {
-                if(moveBoard[i][j] == moveBoard[i][j-1]) {
-                    moveBoard[i][j] *= 2;
-                    moveBoard[i][j-1] = 0;
-                    int k = j-2;
-                    while(k >= 0 && moveBoard[i][k] != 0) {
-                        moveBoard[i][k+1] = moveBoard[i][k];
-                        moveBoard[i][k] = 0;
-                        k--;
-                    }
-                }
-            }
-        }
-
-        return moveBoard;
     }
 }
