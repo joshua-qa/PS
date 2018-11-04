@@ -1,103 +1,140 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
-
 public class Main {
-    private int[] Dx = {-1, 0, 0, 1};
-    private int[] Dy = {0, -1, 1, 0};
-    private ArrayList<Tomato> tomatoList = new ArrayList<>();
-    private int[][] map;
-    private int n, m;
-    private Queue<Tomato> visit = new LinkedList<>();
-    private StringTokenizer st;
-    private boolean[][] check;
-    public static void main(String[] args) throws IOException {
-        new Main().run();
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    public void run() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static class Task {
+        int m, n, count, result;
+        int[] dx = {-1, 0, 0, 1};
+        int[] dy = {0, -1, 1, 0};
+        int[][] map;
+        Queue<Point> queue = new LinkedList<>();
+        public void run(InputReader in, PrintWriter out) {
+            m = in.nextInt();
+            n = in.nextInt();
+            map = new int[n][m];
+            count = m * n;
 
-        String[] str = br.readLine().split(" ");
-        m = Integer.parseInt(str[0]);
-        n = Integer.parseInt(str[1]);
-        int result = 0;
-        boolean flag = true;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    map[i][j] = in.nextInt();
+                    if(map[i][j] == 1) {
+                        queue.add(new Point(i, j));
+                    }
 
-        map = new int[n][m];
-
-        for(int i = 0; i < n; i++) {
-            st = new StringTokenizer(br.readLine());
-            for(int j = 0; j < m; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if(map[i][j] == 1) {
-                    tomatoList.add(new Tomato(i, j));
+                    if(map[i][j] != 0) {
+                        count--;
+                    }
                 }
             }
-        }
 
-        for(Tomato t : tomatoList) {
-            bfs(t.x, t.y);
-        }
+            if(queue.isEmpty()) {
+                out.print("-1");
+                return;
+            }
 
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < m; j++) {
-                if(map[i][j] == 0) {
-                    flag = false;
-                    break;
-                } else {
-                    result = Math.max(result, map[i][j]);
+            if(count == 0) {
+                out.print("0");
+                return;
+            }
+
+            bfs();
+
+            if(count != 0) {
+                out.print("-1");
+                return;
+            }
+
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < m; j++) {
+                    if(map[i][j] > result) {
+                        result = map[i][j];
+                    }
                 }
             }
-            if(!flag) {
-                break;
-            }
+
+            out.print(--result);
         }
 
-        if(flag) {
-            if(result == 0) {
-                System.out.println("0");
-            } else {
-                System.out.println(result - 1);
-            }
-        } else {
-            System.out.println("-1");
-        }
-    }
+        private void bfs() {
+            while(!queue.isEmpty()) {
+                Point p = queue.poll();
 
-    private void bfs(int x, int y) {
-        int currX = 0, currY = 0;
-        check = new boolean[n][m];
-        visit.add(new Tomato(x, y));
-        check[x][y] = true;
+                for (int i = 0; i < dx.length; i++) {
+                    int currX = p.x + dx[i];
+                    int currY = p.y + dy[i];
 
-        while(!visit.isEmpty()) {
-            Tomato t = visit.remove();
-
-            for(int i = 0; i < 4; i++) {
-                currX = t.x + Dx[i];
-                currY = t.y + Dy[i];
-                if(currX >= 0 && currY >= 0 && currX < map.length && currY < map[0].length) {
-                    if(map[currX][currY] == -1) {
+                    if(judge(currX, currY) || map[currX][currY] == -1) {
                         continue;
                     }
-                    if(!check[currX][currY] && map[currX][currY] != 1 && (map[t.x][t.y] + 1 < map[currX][currY] || map[currX][currY] == 0)) {
-                        visit.add(new Tomato(currX, currY));
-                        map[currX][currY] = map[t.x][t.y] + 1;
-                        check[currX][currY] = true;
+
+                    if(map[currX][currY] == 0 || map[currX][currY] > map[p.x][p.y] + 1) {
+                        if(map[currX][currY] == 0) {
+                            count--;
+                        }
+                        map[currX][currY] = map[p.x][p.y] + 1;
+                        queue.add(new Point(currX, currY));
                     }
                 }
             }
         }
-    }
-}
 
-class Tomato {
-    int x;
-    int y;
-    public Tomato(int x, int y) {
-        this.x = x;
-        this.y = y;
+        private boolean judge(int x, int y) {
+            return x < 0 || x >= n || y < 0 || y >= m;
+        }
+    }
+
+    static class Point {
+        int x;
+        int y;
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
+        }
     }
 }
