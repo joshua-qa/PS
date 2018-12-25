@@ -1,61 +1,110 @@
-package Joshua.PS.BOJ;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    ArrayList<Integer> number = new ArrayList<>();
-    public static void main(String[] args) throws IOException {
-        new Main().run();
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    public void run() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
-        int m = Integer.parseInt(br.readLine());
-        int curr = 0, min = 999999;
+    static class Task {
+        int n, m, sub, result;
+        boolean[] numberPad = new boolean[10];
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            m = in.nextInt();
 
-        for(int i = 0; i < 10; i++) {
-            number.add(i);
+            for(int i = 0; i < m; i++) {
+                numberPad[in.nextInt()] = true;
+            }
+
+            result = abs(n - 100);
+
+            for(int i = 0; i <= 1000000; i++) {
+                if(!judge(i)) {
+                    continue;
+                }
+
+                sub = abs(i - n) + length(i);
+
+                if(result > sub) {
+                    result = sub;
+                }
+            }
+
+            out.print(result);
         }
 
-        if(m != 0) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            for (int i = 0; i < m; i++) {
-                number.remove(number.indexOf(Integer.parseInt(st.nextToken())));
-            }
+        private int abs(int num) {
+            return num > 0 ? num : -num;
         }
 
-        for(int i = 0; i <= 1000000; i++) {
-            if(!judge(i)) {
-                continue;
+        private int length(int num) {
+            if(num == 0) {
+                return 1;
             }
-            if(min > Math.abs(i-n)) {
-                min = Math.abs(i-n);
-                curr = i;
+            int length = 0;
+            long temp = 1;
+            while (temp <= num) {
+                length++;
+                temp *= 10;
             }
+            return length;
         }
 
-        int length = String.valueOf(curr).length();
-        int worst = Math.abs(n - 100);
-        if(n == 100) {
-            System.out.println("0");
-        } else {
-            System.out.println(Math.min(length + min, worst));
+        private boolean judge(int num) {
+            int div = num;
+            int mod = 0;
+            while(div >= 10) {
+                mod = div % 10;
+                div = div / 10;
+                if(numberPad[mod]) {
+                    return false;
+                }
+            }
+            return !numberPad[div];
         }
     }
 
-    private boolean judge(int n) {
-        char[] input = String.valueOf(n).toCharArray();
-        for(int i = 0; i < input.length; i++) {
-            if(!number.contains(input[i] - '0')) {
-                return false;
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        return true;
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
+        }
     }
 }
