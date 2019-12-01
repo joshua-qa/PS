@@ -45,24 +45,24 @@ public class Main {
         }
 
         private boolean isArrive(Truck t) {
-            return time - t.inputTime == w;
+            return time - t.entryTime == w;
         }
 
         static class Truck {
             int weight;
-            int inputTime;
+            int entryTime;
 
-            public Truck(int weight, int inputTime) {
+            public Truck(int weight, int entryTime) {
                 this.weight = weight;
-                this.inputTime = inputTime;
+                this.entryTime = entryTime;
             }
 
             public int getWeight() {
                 return weight;
             }
 
-            public int getInputTime() {
-                return inputTime;
+            public int getentryTime() {
+                return entryTime;
             }
         }
     }
