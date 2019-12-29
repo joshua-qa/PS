@@ -13,20 +13,15 @@ public class Main {
     }
 
     static class Task {
-        int max, maxIndex, length, result;
+        int maxIndex, length, result;
         int[] palindrome;
         public void run(InputReader in, PrintWriter out) {
             String input = in.nextLine();
             length = input.length();
             char[] string = init(input);
             solve(string);
-            max = palindrome[maxIndex];
-            if ((max & 1) == 1) {
-                result = (string[maxIndex] == '#') ? max + 1 : max;
-            } else {
-                result = (string[maxIndex] == '#') ? max : max + 1;
-            }
-            out.print(result);
+
+            out.print(palindrome[maxIndex]);
         }
 
         private char[] init(String input) {
