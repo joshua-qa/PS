@@ -1,59 +1,92 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    private StringTokenizer st;
-    private StringBuilder sb = new StringBuilder();
-    private int[] numList = new int[2001];
-    private int[][] D = new int[2001][2001];
-    private int s, e;
-    public static void main(String[] args) throws IOException {
-        new Main().run();
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    public void run() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
-        int n = Integer.parseInt(br.readLine());
-
-        st = new StringTokenizer(br.readLine());
-        for(int i = 1; i <= n; i++) {
-            numList[i] = Integer.parseInt(st.nextToken());
+    static class Task {
+        int n, m, s, e;
+        int[] nums;
+        int[][] dp;
+        StringBuilder sb = new StringBuilder();
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            nums = new int[n+1];
+            dp = new int[n+1][n+1];
+            for (int i = 1; i <= n; i++) {
+                nums[i] = in.nextInt();
+                dp[i][i] = 1;
+            }
+            init();
+            m = in.nextInt();
+            for (int i = 0; i < m; i++) {
+                s = in.nextInt();
+                e = in.nextInt();
+                sb.append(dp[s][e]).append("\n");
+            }
+            out.print(sb);
         }
 
-        int m = Integer.parseInt(br.readLine());
+        private void init() {
+            for (int i = 1; i < n; i++) {
+                int start = i - 1, end = i + 1;
+                while (start > 0 && end <= n && nums[start] == nums[end]) {
+                    dp[start--][end++] = 1;
+                }
+                if (nums[i] == nums[i+1]) {
+                    dp[i][i+1] = 1;
+                    start = i - 1;
+                    end = i + 2;
+                    while (start > 0 && end <= n && nums[start] == nums[end]) {
+                        dp[start--][end++] = 1;
+                    }
+                }
+            }
+        }
+    }
 
-        for(int i = 1; i <= n; i++) {
-            D[i][i] = 1;
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
         }
 
-        for(int i = 1; i <= n; i++) {
-            for(int j = i+1; j <= n; j++) {
-                D[i][j] = (numList[i] == numList[j]) ? 1 : 0;
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        for(int a = 0; a < m; a++) {
-            st = new StringTokenizer(br.readLine());
-            s = Integer.parseInt(st.nextToken());
-            e = Integer.parseInt(st.nextToken());
-
-            sb.append((DP(s, e) ? 1 : 0) + "\n");
+        public int nextInt() {
+            return Integer.parseInt(next());
         }
 
-        System.out.print(sb);
-    }
-
-    private boolean DP(int s, int e) {
-        int center = (s+e) / 2;
-
-        for(int i = s, j = e; i <= center; i++, j--) {
-            if(D[i][j] == 0) {
-                return false;
-            }
+        public long nextLong() {
+            return Long.parseLong(next());
         }
-        return true;
     }
 }
