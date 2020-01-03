@@ -31,10 +31,7 @@ public class Main {
                 Arrays.fill(dp[i], MAX);
             }
             dp[1][0] = 0;
-            for (int i = 1; i < fullVisit; i++) {
-                if ((i & 1) == 0) {
-                    continue;
-                }
+            for (int i = 1; i < fullVisit; i += 2) {
                 for (int j = 1; j < n; j++) {
                     int currentBit = 1 << j;
                     if ((i & currentBit) != 0) {
