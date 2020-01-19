@@ -14,33 +14,33 @@ public class Main {
 
     static class Task {
         int n, max = 987654321;
-        int[] dp, beforeStep;
+        int[] dp, before;
         Stack<Integer> stack = new Stack<>();
         public void run(InputReader in, PrintWriter out) {
             n = in.nextInt();
             dp = new int[n+1];
             init();
-            beforeStep = new int[n+1];
+            before = new int[n+1];
             for (int i = 1; i < n; i++) {
                 int d = i + i;
                 int t = d + i;
                 if (t <= n && dp[t] > dp[i] + 1) {
                     dp[t] = dp[i] + 1;
-                    beforeStep[t] = i;
+                    before[t] = i;
                 }
                 if (d <= n && dp[d] > dp[i] + 1) {
                     dp[d] = dp[i] + 1;
-                    beforeStep[d] = i;
+                    before[d] = i;
                 }
                 if (dp[i+1] > dp[i] + 1) {
                     dp[i+1] = dp[i] + 1;
-                    beforeStep[i+1] = i;
+                    before[i+1] = i;
                 }
             }
             out.write(dp[n] + "\n");
             while(n > 0) {
                 out.write(n + " ");
-                n = beforeStep[n];
+                n = before[n];
             }
             out.flush();
         }
