@@ -1,59 +1,98 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    private int N, M, result;
-    private int[] lan;
-    public static void main(String[] args) throws IOException {
-        new Main().run();
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    public void run() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static class Task {
+        private int[] house;
+        private int n, m, max, low, hi, end, mid;
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            m = in.nextInt();
 
-        String[] str = br.readLine().split(" ");
-        N = Integer.parseInt(str[0]);
-        M = Integer.parseInt(str[1]);
-        lan = new int[N];
-
-        for(int i = 0; i < N; i++) {
-            lan[i] = Integer.parseInt(br.readLine());
-        }
-        Arrays.sort(lan);
-        int min = lan[0];
-        int max = lan[N-1];
-
-        rec(min, (min+max) / 2, max);
-        System.out.print(result);
-    }
-
-    private void rec(int min, int mid, int max) {
-        if(min > max) {
-            result = mid;
-            return;
-        }
-        int curr = lan[0];
-        int remain = M-1;
-        int equalCount = 0, i = 1;
-
-        while(curr <= lan[N-1] && i < N && remain > 0) {
-            if(lan[i] == curr+mid) {
-                equalCount++;
-                remain--;
-                curr = lan[i];
-            } else if(lan[i] > curr+mid) {
-                remain--;
-                curr = lan[i];
+            house = new int[n];
+            for (int i = 0; i < n; i++) {
+                house[i] = in.nextInt();
             }
-            i++;
+            Arrays.sort(house);
+            solve();
+            out.print(max);
         }
 
-        if(remain > 0) {
-            rec(min, (min+mid-1)/2, mid-1);
-        } else {
-            rec(mid+1, (mid+max+1)/2, max);
+        private void solve() {
+            low = 1;
+            hi = house[n-1] - house[0];
+            end = house[n-1];
+
+            while (low <= hi) {
+                mid = (low + hi) / 2;
+                boolean flag = true;
+                int i = 1;
+
+                for (int j = 1, prev = 0; i < m && j < n; j++) {
+                    int current = house[prev] + mid;
+                    if (current > end) {
+                        flag = false;
+                        break;
+                    }
+                    if (current <= house[j]) {
+                        i++;
+                        prev = j;
+                    }
+                }
+                if (flag && i == m) {
+                    max = Math.max(max, mid);
+                    low = mid + 1;
+                    continue;
+                }
+                hi = mid - 1;
+            }
+        }
+    }
+
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
         }
     }
 }
