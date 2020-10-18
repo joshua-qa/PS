@@ -1,54 +1,79 @@
-package Joshua.PS.BOJ;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    private int[][][] jadu = new int[2][1001][32];
-    private int[] P = new int[1001];
-    public static void main(String[] args) throws IOException {
-        new Main().run();
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    public void run() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static class Task {
+        private int[][][] dp;
+        private int n, m, max, tree, sideTree;
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            m = in.nextInt();
 
-        String[] str = br.readLine().split(" ");
-        int n = parseInt(str[0]);
-        int w = parseInt(str[1]);
+            dp = new int[n+1][m+1][3];
+            for (int i = 1; i <= n; i++) {
+                tree = in.nextInt();
 
-        for(int i = 1; i <= n; i++) {
-            P[i] = parseInt(br.readLine());
-        }
-
-        int max = 0;
-
-        if(P[1] == 1) {
-            jadu[0][1][1] = 1;
-            jadu[1][1][2] = 0;
-        } else {
-            jadu[0][1][1] = 0;
-            jadu[1][1][2] = 1;
-        }
-
-        for(int i = 2; i <= n; i++) {
-            for(int j = 1; j <= w+1; j++) {
-                if(P[i] == 1) {
-                    jadu[0][i][j] = Math.max(jadu[0][i-1][j], jadu[1][i-1][j-1]) + 1;
-                    jadu[1][i][j] = Math.max(jadu[0][i-1][j-1], jadu[1][i-1][j]);
-                } else {
-                    jadu[0][i][j] = Math.max(jadu[0][i-1][j], jadu[1][i-1][j-1]);
-                    jadu[1][i][j] = Math.max(jadu[0][i-1][j-1], jadu[1][i-1][j]) + 1;
+                sideTree = 3 - tree;
+                dp[i][0][tree] = dp[i-1][0][tree];
+                dp[i][0][sideTree] = dp[i-1][0][sideTree];
+                if (tree == 1) {
+                    dp[i][0][tree]++;
                 }
-                max = Math.max(max, Math.max(jadu[0][i][j], jadu[1][i][j]));
+                max = Math.max(Math.max(dp[i][0][tree], dp[i][0][sideTree]), max);
+                for (int j = 1; j <= m && j <= i; j++) {
+                    dp[i][j][tree] = Math.max(dp[i-1][j-1][sideTree], dp[i-1][j][tree]) + 1;
+                    dp[i][j][sideTree] = Math.max(dp[i-1][j-1][tree], dp[i-1][j][sideTree]);
+                    max = Math.max(Math.max(dp[i][j][tree], dp[i][j][sideTree]), max);
+                }
+            }
+            out.print(max);
+        }
+    }
+
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return tokenizer.nextToken();
+        }
+
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        System.out.println(max);
-    }
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
 
-    private int parseInt(String str) {
-        return Integer.parseInt(str);
+        public long nextLong() {
+            return Long.parseLong(next());
+        }
     }
 }
