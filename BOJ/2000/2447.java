@@ -1,62 +1,92 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    int n;
-    char[][] square;
-    StringBuilder sb = new StringBuilder();
-    public static void main(String[] args) throws IOException {
-        new Main().run();
+    public static void main(String[] args) {
+        InputStream inputStream = System.in;
+        OutputStream outputStream = System.out;
+        InputReader in = new InputReader(inputStream);
+        PrintWriter out = new PrintWriter(outputStream);
+        Task task = new Task();
+        task.run(in, out);
+        out.close();
     }
 
-    public void run() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static class Task {
+        private int n;
+        private char[][] starMap;
+        public void run(InputReader in, PrintWriter out) {
+            n = in.nextInt();
+            starMap = new char[n][n];
+            for (int i = 0; i < n; i++) {
+                Arrays.fill(starMap[i], ' ');
+            }
+            solve(0, 0, n);
+            for (int i = 0; i < n; i++) {
+                out.write(starMap[i]);
+                out.write("\n");
+            }
+        }
 
-        n = Integer.parseInt(br.readLine());
+        private void solve(int x, int y, int size) {
+            if (size == 3) {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (i == 1 && j == 1) {
+                            continue;
+                        }
+                        starMap[x+i][y+j] = '*';
+                    }
+                }
+                return;
+            }
+            int currentSize = size / 3;
 
-        square = new char[n][n];
-        rec(n, 0, 0);
+            solve(x, y, currentSize);
+            solve(x, y + currentSize, currentSize);
+            solve(x, y + (currentSize * 2), currentSize);
+            solve(x + currentSize, y, currentSize);
+            solve(x + currentSize, y + (currentSize * 2), currentSize);
+            solve(x + (currentSize * 2), y, currentSize);
+            solve(x + (currentSize * 2), y + currentSize, currentSize);
+            solve(x + (currentSize * 2), y + (currentSize * 2), currentSize);
+        }
+    }
 
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < n; j++) {
-                if(square[i][j] == 0) {
-                    sb.append(" ");
-                } else {
-                    sb.append(square[i][j]);
+    static class InputReader {
+        public BufferedReader reader;
+        public StringTokenizer tokenizer;
+
+        public InputReader(InputStream stream) {
+            reader = new BufferedReader(new InputStreamReader(stream), 32768);
+            tokenizer = null;
+        }
+
+        public String next() {
+            while (tokenizer == null || !tokenizer.hasMoreTokens()) {
+                try {
+                    tokenizer = new StringTokenizer(reader.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
-            sb.append("\n");
+            return tokenizer.nextToken();
         }
 
-        System.out.print(sb);
-    }
-
-    private void rec(int n, int x, int y) {
-        if(n == 1) {
-            square[x][y] = '*';
-            return;
+        public String nextLine() {
+            try {
+                return reader.readLine();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        if(n == 3) {
-            square[x][y] = '*';
-            square[x][y + 1] = '*';
-            square[x][y + 2] = '*';
-            square[x + 1][y] = '*';
-            square[x + 1][y + 1] = 32;
-            square[x + 1][y + 2] = '*';
-            square[x + 2][y] = '*';
-            square[x + 2][y + 1] = '*';
-            square[x + 2][y + 2] = '*';
-            return;
-        } else {
-            rec(n/3, x, y);
-            rec(n/3, x + n/3, y);
-            rec(n/3, x + n/3 + n/3, y);
-            rec(n/3, x + n/3 + n/3, y + n/3);
-            rec(n/3, x, y + n/3);
-            rec(n/3, x, y + n/3 + n/3);
-            rec(n/3, x + n/3, y + n/3 + n/3);
-            rec(n/3, x + n/3 + n/3, y + n/3 + n/3);
+
+        public int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        public long nextLong() {
+            return Long.parseLong(next());
         }
     }
 }
