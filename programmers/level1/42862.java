@@ -1,3 +1,4 @@
+// 프로그래머스 레벨1 - 체육복
 class Solution {
     public int solution(int n, int[] lost, int[] reserve) {
         int answer = n - lost.length;

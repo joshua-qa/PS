@@ -1,3 +1,4 @@
+// 프로그래머스 레벨1 - 두 개 뽑아서 더하기
 import java.util.*;
 class Solution {
     public int[] solution(int[] numbers) {
