@@ -90,7 +90,7 @@ class Solution {
             for (int j = 0; j < 3; j++) {
                 for (int k = 0; k < 3; k++) {
                     for (int l = 0; l < 3; l++) {
-                        Collections.sort(tables[i][j][k][l].scores);
+                        tables[i][j][k][l].sort();
                     }
                 }
             }
