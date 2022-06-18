@@ -8,7 +8,6 @@ class WordFilter {
         for (int n = 0; n < words.length; n++) {
             int wordLength = words[n].length();
             int suffixCount = wordLength < 10 ? wordLength : 10;
-            // suffixcount 3, i = 3-1 (2) , i >= 3 - 3
             char[] chars = words[n].toCharArray();
             String currKey = "#" + words[n];
             for (int i = wordLength-1; i >= wordLength-suffixCount; i--) {
