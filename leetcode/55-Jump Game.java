@@ -1,28 +1,19 @@
-// 1ms. 네번이나 틀리고 맞을 난이도는 아닌데 너무 날먹하려고 했다...
+// 2ms. 끝에 도달할 수 있는 케이스와 도달할 수 없는 케이스를 각각 그려서 비교해보면 쉽다.
+// 8월에는 이 문제를 완전 헤매다가 겨우 풀었는데 지금은 그것보다 짧고 간결한 로직으로 풀 수 있어서 신난다.
 class Solution {
     public boolean canJump(int[] nums) {
         int length = nums.length;
-        if (length == 1) {
-            return true;
-        }
-        if (nums[0] == 0) {
-            return false;
-        }
-        int curr = 0;
-        while (curr >= 0 && curr < length-1) {
-            if (nums[curr] == 0) {
-                int prev = curr-1;
-                while (prev > 0 && nums[prev] + prev <= curr) {
-                    prev--;
-                }
-                if (prev <= 0) {
-                    return false;
-                }
-                curr = nums[prev] + prev;
-                continue;
+
+        int start = nums[0];
+        for (int i = 1; i < length; i++) {
+            start--;
+            if (start < 0) {
+                return false;
             }
-            curr += nums[curr];
+            if (nums[i] > start) {
+                start = nums[i];
+            }
         }
-        return curr >= length-1;
+        return true;
     }
 }
