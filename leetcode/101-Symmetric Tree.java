@@ -1,4 +1,4 @@
-// 2ms. 재밌는 문제였다
+// 0ms. 작년 8월에 풀었던 문제인데 이번에는 더 깔끔하고 짧게 풀었다. 다행!
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -15,39 +15,26 @@
  * }
  */
 class Solution {
-    List<Integer> left, right;
     public boolean isSymmetric(TreeNode root) {
         if (root.left == null && root.right == null) {
             return true;
         }
-        left = new ArrayList<>();
-        right = new ArrayList<>();
-        dfs(root.left, true);
-        dfs(root.right, false);
-        if (left.size() != right.size()) {
+        if (root.left == null || root.right == null) {
             return false;
         }
-        return left.equals(right);
+        return isSymmetricChildNode(root.left, root.right);
     }
 
-    private void dfs(TreeNode root, boolean isLeft) {
-        if (root == null) {
-            if (isLeft) {
-                left.add(null);
-            } else {
-                right.add(null);
-            }
-            return;
+    private boolean isSymmetricChildNode(TreeNode left, TreeNode right) {
+        if (left == null && right == null) {
+            return true;
         }
-
-        if (isLeft) {
-            left.add(root.val);
-            dfs(root.left, true);
-            dfs(root.right, true);
-        } else {
-            right.add(root.val);
-            dfs(root.right, false);
-            dfs(root.left, false);
+        if (left == null || right == null) {
+            return false;
         }
+        if (left.val != right.val) {
+            return false;
+        }
+        return isSymmetricChildNode(left.left, right.right) && isSymmetricChildNode(left.right, right.left);
     }
 }
