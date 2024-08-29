@@ -1,62 +1,81 @@
-// 71ms. 너무 어렵게 생각했는데 결국 토픽이 뭔지 보고 풀었다.. 이런 패턴 더 연습해야함
 class Solution {
-    private boolean[] visit;
+    private int width, height;
     private int[] union;
-    private int length;
+    private List<Integer>[] horizontal;
+    private List<Integer>[] vertical;
     public int removeStones(int[][] stones) {
-        length = stones.length;
-        int count = 0;
-        union = new int[length];
-        visit = new boolean[length];
-        for (int i = 0; i < length; i++) {
+        // union find
+        // 일치하는 그룹끼리 합친 뒤 (전체 갯수 - 그룹 갯수)로 정답 리턴하면 됨
+        for (int[] stone : stones) {
+            width = Math.max(width, stone[1]);
+            height = Math.max(height, stone[0]);
+        }
+
+        width++;
+        height++;
+
+        union = new int[stones.length];
+        for (int i = 0; i < union.length; i++) {
             union[i] = i;
         }
 
-        for (int i = 0; i < length; i++) {
-            if (visit[i]) {
-                continue;
-            }
-            dfs(stones, i);
+        horizontal = new ArrayList[height];
+        vertical = new ArrayList[width];
+        for (int i = 0; i < height; i++) {
+            horizontal[i] = new ArrayList<>();
         }
 
-        for (int i = 0; i < length; i++) {
-            if (union[i] == i) {
-                count++;
-            }
+        for (int i = 0; i < width; i++) {
+            vertical[i] = new ArrayList<>();
         }
 
-        return length - count;
-    }
-
-    private void dfs(int[][] stones, int currIndex) {
-        visit[currIndex] = true;
-
-        int x = stones[currIndex][0];
-        int y = stones[currIndex][1];
-
-        for (int i = 0; i < length; i++) {
-            if (visit[i]) {
-                continue;
-            }
+        // stone[0] = x (height), stone[1] = y (width)
+        for (int i = 0; i < stones.length; i++) {
             int[] stone = stones[i];
-            if (stone[0] != x && stone[1] != y) {
+            horizontal[stone[0]].add(i);
+            vertical[stone[1]].add(i);
+        }
+
+        for (int i = 0; i < height; i++) {
+            if (horizontal[i].isEmpty()) {
                 continue;
             }
 
-            union(currIndex, i);
-            dfs(stones, i);
+            // horizontal에 들어있는 것중 첫번째를 지목하고 하나씩 탐색
+            // 현재 stone을 지목해놓은 첫번째에 합치고, 각자 해당하는 vertical을 탐색해서 다 합치기
+            int firstStone = horizontal[i].get(0);
+            for (int currStone : horizontal[i]) {
+                merge(currStone, firstStone);
+                int currWidth = stones[currStone][1];
+                for (int widthStone : vertical[currWidth]) {
+                    merge(widthStone, firstStone);
+                }
+            }
         }
+
+        Set<Integer> groups = new HashSet<>();
+        for (int i = 0; i < union.length; i++) {
+            int parent = find(i);
+            groups.add(parent);
+        }
+
+        return stones.length - groups.size();
     }
 
-    private void union(int a, int b) {
-        int parent = find(a);
-        union[b] = parent;
+    private int find(int n) {
+        if (union[n] == n) {
+            return n;
+        }
+        union[n] = find(union[n]);
+        return union[n];
     }
 
-    private int find(int a) {
-        if (union[a] == a) {
-            return a;
+    private void merge(int a, int b) {
+        a = find(a);
+        b = find(b);
+        if (a == b) {
+            return;
         }
-        return union[a] = find(union[a]);
+        union[b] = a;
     }
 }
