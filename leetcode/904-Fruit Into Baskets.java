@@ -1,48 +1,43 @@
-// 7ms. 다행히 O(N) 해법을 금방 찾음
 class Solution {
     public int totalFruit(int[] fruits) {
-        int length = fruits.length;
-        if (length < 3) {
-            return length;
+        if (fruits.length < 3) {
+            return fruits.length;
         }
-        int[] count = new int[length];
-        count[fruits[0]]++;
-        count[fruits[1]]++;
-        int currFruitCount = (fruits[0] == fruits[1]) ? 1 : 2;
-        int firstFruit = fruits[0];
-        int secondFruit = (fruits[0] == fruits[1]) ? -1 : fruits[1];
-        int tail = 0;
-        int result = 2;
-        for (int i = 2; i < length; i++) {
-            int currFruit = fruits[i];
-            if (currFruitCount == 1) {
-                count[currFruit]++;
-                if (currFruit != fruits[i-1]) {
-                    secondFruit = currFruit;
-                    currFruitCount++;
-                }
-                if (result < i-tail+1) {
-                    result = i-tail+1;
-                }
-                continue;
+        int left = 0, right = 1, basket1Num = fruits[0], basket2Num = -1, basket1LastIndex = 0, basket2LastIndex = 0, size = fruits.length, result = 0;
+
+        while (right < size && fruits[right] == fruits[left]) {
+            right++;
+        }
+
+        if (right == size) {
+            return size;
+        }
+
+        basket2Num = fruits[right];
+        basket1LastIndex = right-1;
+        basket2LastIndex = right;
+        result = right - left + 1;
+
+        while (right + 1 < size) {
+            right++;
+            if (fruits[right] == basket1Num) {
+                basket1LastIndex = right;
+            } else if (fruits[right] == basket2Num) {
+                basket2LastIndex = right;
+            } else {
+                int prevNum = fruits[right-1];
+                left = (prevNum == basket1Num) ? (basket2LastIndex + 1) : (basket1LastIndex + 1);
+                basket1Num = prevNum;
+                basket1LastIndex = right-1;
+                basket2Num = fruits[right];
+                basket2LastIndex = right;
             }
-            if (count[currFruit] == 0 && currFruitCount == 2) {
-                if (result < i-tail) {
-                    result = i-tail;
-                }
-                while (count[firstFruit] > 0 && count[secondFruit] > 0) {
-                    count[fruits[tail++]]--;
-                }
-                firstFruit = fruits[tail];
-                secondFruit = currFruit;
-                count[secondFruit]++;
-                continue;
-            }
-            count[currFruit]++;
-            if (result < i-tail+1) {
-                result = i-tail+1;
+
+            if (right - left + 1 > result) {
+                result = right - left + 1;
             }
         }
+
         return result;
     }
 }
